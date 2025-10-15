@@ -35,13 +35,13 @@ WHERE g.liczba_godzin > 160 AND pr.kwota = 0;
 SELECT p.imie, p.nazwisko, (pe.kwota + pr.kwota) AS laczne_wynagrodzenie FROM pracownicy p
 JOIN wynagrodzenie w ON p.id_pracownika = w.id_pracownika
 JOIN pensja pe ON w.id_pensji = pe.id_pensji
-LEFT JOIN premia pr ON w.id_premii = pr.id_premii
+JOIN premia pr ON w.id_premii = pr.id_premii
 ORDER BY laczne_wynagrodzenie;
 
 SELECT p.imie, p.nazwisko, (pe.kwota + pr.kwota) AS laczne_wynagrodzenie FROM pracownicy p
 JOIN wynagrodzenie w ON p.id_pracownika = w.id_pracownika
 JOIN pensja pe ON w.id_pensji = pe.id_pensji
-LEFT JOIN premia pr ON w.id_premii = pr.id_premii
+JOIN premia pr ON w.id_premii = pr.id_premii
 ORDER BY laczne_wynagrodzenie DESC ;
 
 SELECT pe.stanowisko, COUNT(p.id_pracownika) AS liczba_pracownikow FROM pracownicy p
@@ -57,16 +57,16 @@ GROUP BY pe.stanowisko;
 
 SELECT SUM(pe.kwota + pr.kwota) FROM wynagrodzenie w
 JOIN pensja pe ON w.id_pensji = pe.id_pensji
-LEFT JOIN premia pr ON w.id_premii = pr.id_premii;
+JOIN premia pr ON w.id_premii = pr.id_premii;
 
 SELECT pe.stanowisko,SUM(pe.kwota + pr.kwota) FROM wynagrodzenie w
 JOIN pensja pe ON w.id_pensji = pe.id_pensji
-LEFT JOIN premia pr ON w.id_premii = pr.id_premii
+JOIN premia pr ON w.id_premii = pr.id_premii
 GROUP BY pe.stanowisko;
 
 SELECT pe.stanowisko,COUNT(pr.id_premii) AS liczba_premii FROM wynagrodzenie w
 JOIN pensja pe ON w.id_pensji = pe.id_pensji
-LEFT JOIN premia pr ON w.id_premii = pr.id_premii
+JOIN premia pr ON w.id_premii = pr.id_premii
 GROUP BY pe.stanowisko;
 
 DELETE FROM pracownicy
