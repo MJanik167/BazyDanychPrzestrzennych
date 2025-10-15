@@ -3,8 +3,8 @@ CREATE SCHEMA Księgowość;
 SET search_path TO Księgowość;
 
 create table pracownicy(
-                                            id_pracownika integer not null
-                                                constraint pracownicy_pk
+                                            id_pracownika integer generated always as identity
+                                                not null constraint pracownicy_pk
                                                     primary key,
                                             imie          varchar(255),
                                             nazwisko      varchar(255),
@@ -13,8 +13,8 @@ create table pracownicy(
                                         );
 create table  godziny
                                         (
-                                            id_godziny    integer not null
-                                                constraint godziny_pk
+                                            id_godziny    integer generated always as identity
+                                                not null constraint godziny_pk
                                                     primary key,
                                             id_pracownika integer
                                                 constraint id_pracownika
@@ -24,7 +24,7 @@ create table  godziny
                                         );
 create table  pensja
                                         (
-                                            id_pensji  integer not null
+                                            id_pensji  integer generated always as identity not null
                                                 constraint id_pensji
                                                     primary key,
                                             stanowisko varchar,
@@ -32,7 +32,7 @@ create table  pensja
                                         );
 create table  premia
                                         (
-                                            id_premii integer not null
+                                            id_premii integer generated always as identity not null
                                                 constraint premia_pk
                                                     primary key,
                                             rodzaj    varchar,
@@ -40,7 +40,7 @@ create table  premia
                                         );
 create table  wynagrodzenie
                                         (
-                                            id_wynagrodzenia integer not null
+                                            id_wynagrodzenia integer generated always as identity not null
                                                 constraint wynagrodzenie_pk
                                                     primary key,
                                             " data"          date,
@@ -69,50 +69,50 @@ INSERT INTO pracownicy (imie, nazwisko, adres, telefon) VALUES
                                         ('Robert', 'Dąbrowski', 'ul. Parkowa 1, Białystok', '608901234'),
                                         ('Magdalena', 'Pawlak', 'ul. Spacerowa 4, Toruń', '609012345');
 
-INSERT INTO godziny (id_godziny, id_pracownika, liczba_godzin, data) VALUES
-                                        (1, 1, 160, '2025-01-31'),
-                                        (2, 2, 168, '2025-01-31'),
-                                        (3, 3, 150, '2025-01-31'),
-                                        (4, 4, 172, '2025-01-31'),
-                                        (5, 5, 160, '2025-01-31'),
-                                        (6, 6, 158, '2025-01-31'),
-                                        (7, 7, 165, '2025-01-31'),
-                                        (8, 8, 162, '2025-01-31'),
-                                        (9, 9, 170, '2025-01-31'),
-                                        (10, 10, 155, '2025-01-31');
+INSERT INTO godziny (id_pracownika, liczba_godzin, data) VALUES
+                                        ( 1, 160, '2025-01-31'),
+                                        ( 2, 168, '2025-01-31'),
+                                        ( 3, 150, '2025-01-31'),
+                                        ( 4, 172, '2025-01-31'),
+                                        ( 5, 160, '2025-01-31'),
+                                        ( 6, 158, '2025-01-31'),
+                                        ( 7, 165, '2025-01-31'),
+                                        (8, 162, '2025-01-31'),
+                                        (9, 170, '2025-01-31'),
+                                        ( 10, 155, '2025-01-31');
 
-INSERT INTO pensja (id_pensji, stanowisko, kwota) VALUES
-                                        (1, 'Księgowy', 5200),
-                                        (2, 'Specjalista IT', 7800),
-                                        (3, 'Kierownik', 9500),
-                                        (4, 'Asystent', 4200),
-                                        (5, 'Magazynier', 4000),
-                                        (6, 'Sprzedawca', 4300),
-                                        (7, 'HR Manager', 8800),
-                                        (8, 'Marketing Specialist', 6400),
-                                        (9, 'Technik', 5000),
-                                        (10, 'Operator', 4500);
+INSERT INTO pensja (stanowisko, kwota) VALUES
+                                        ( 'Księgowy', 5200),
+                                        ( 'Specjalista IT', 7800),
+                                        ( 'Kierownik', 9500),
+                                        ( 'Asystent', 4200),
+                                        ( 'Magazynier', 4000),
+                                        ( 'Sprzedawca', 4300),
+                                        ( 'HR Manager', 8800),
+                                        ( 'Marketing Specialist', 6400),
+                                        ( 'Technik', 5000),
+                                        ( 'Operator', 4500);
 
- INSERT INTO premia (id_premii, rodzaj, kwota) VALUES
-                                        (1, 'Roczna', 1500),
-                                        (2, 'Świąteczna', 1000),
-                                        (3, 'Uznaniowa', 800),
-                                        (4, 'Za frekwencję', 600),
-                                        (5, 'Za wydajność', 1200),
-                                        (6, 'Roczna', 1500),
-                                        (7, 'Specjalna', 2000),
-                                        (8, 'Projektowa', 1800),
-                                        (9, 'Za oszczędności', 700),
-                                        (10, 'Okazjonalna', 500);
+ INSERT INTO premia ( rodzaj, kwota) VALUES
+                                        ( 'Roczna', 1500),
+                                        ( 'Świąteczna', 1000),
+                                        ( 'Uznaniowa', 800),
+                                        ( 'Za frekwencję', 600),
+                                        ( 'Za wydajność', 1200),
+                                        ( 'Roczna', 1500),
+                                        ( 'Specjalna', 2000),
+                                        ( 'Projektowa', 1800),
+                                        ( 'Za oszczędności', 700),
+                                        ( 'Okazjonalna', 500);
 
-    INSERT INTO wynagrodzenie (id_wynagrodzenia, " data", id_pracownika, id_godziny, id_pensji, id_premii) VALUES
-                                        (1, '2025-01-31', 1, 1, 1, 1),
-                                        (2, '2025-01-31', 2, 2, 2, 2),
-                                        (3, '2025-01-31', 3, 3, 3, 3),
-                                        (4, '2025-01-31', 4, 4, 4, 4),
-                                        (5, '2025-01-31', 5, 5, 5, 5),
-                                        (6, '2025-01-31', 6, 6, 6, 6),
-                                        (7, '2025-01-31', 7, 7, 7, 7),
-                                        (8, '2025-01-31', 8, 8, 8, 8),
-                                        (9, '2025-01-31', 9, 9, 9, 9),
-                                        (10, '2025-01-31', 10, 10, 10, 10);
+    INSERT INTO wynagrodzenie ( " data", id_pracownika, id_godziny, id_pensji, id_premii) VALUES
+                                        ( '2025-01-31', 1, 1, 1, 1),
+                                        ( '2025-01-31', 2, 2, 2, 2),
+                                        ( '2025-01-31', 3, 3, 3, 3),
+                                        ( '2025-01-31', 4, 4, 4, 4),
+                                        ( '2025-01-31', 5, 5, 5, 5),
+                                        ( '2025-01-31', 6, 6, 6, 6),
+                                        ( '2025-01-31', 7, 7, 7, 7),
+                                        ( '2025-01-31', 8, 8, 8, 8),
+                                        ( '2025-01-31', 9, 9, 9, 9),
+                                        ( '2025-01-31', 10, 10, 10, 10);
