@@ -3,7 +3,7 @@ CREATE SCHEMA Księgowość;
 SET search_path TO Księgowość;
 
 create table pracownicy(
-                                            id_pracownika integer generated always as identity
+                                            id_pracownika integer not null
                                                 constraint pracownicy_pk
                                                     primary key,
                                             imie          varchar(255),
@@ -38,7 +38,7 @@ create table  premia
                                             rodzaj    varchar,
                                             kwota     double precision
                                         );
-                                        create table  wynagrodzenie
+create table  wynagrodzenie
                                         (
                                             id_wynagrodzenia integer not null
                                                 constraint wynagrodzenie_pk

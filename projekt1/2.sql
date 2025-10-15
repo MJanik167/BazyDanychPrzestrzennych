@@ -16,7 +16,7 @@ WHERE imie like 'J%';
 SELECT imie, nazwisko FROM pracownicy
 WHERE nazwisko ilike 'n%a';
 
-SELECT p.imie, p.nazwisko, liczba_godzin-160 AS nadgodziny FROM godziny g
+SELECT p.imie, p.nazwisko, (liczba_godzin-160) AS nadgodziny FROM godziny g
 JOIN pracownicy p on g.id_pracownika = p.id_pracownika
 where (liczba_godzin-160)>0;
 
@@ -32,17 +32,15 @@ JOIN godziny g ON w.id_godziny = g.id_godziny
 JOIN premia pr ON w.id_premii = pr.id_premii
 WHERE g.liczba_godzin > 160 AND pr.kwota = 0;
 
-SELECT p.imie, p.nazwisko, (pe.kwota + pr.kwota) AS laczne_wynagrodzenie FROM pracownicy p
+SELECT p.imie, p.nazwisko, pe.kwota FROM pracownicy p
 JOIN wynagrodzenie w ON p.id_pracownika = w.id_pracownika
 JOIN pensja pe ON w.id_pensji = pe.id_pensji
-JOIN premia pr ON w.id_premii = pr.id_premii
-ORDER BY laczne_wynagrodzenie;
+ORDER BY pe.kwota;
 
-SELECT p.imie, p.nazwisko, (pe.kwota + pr.kwota) AS laczne_wynagrodzenie FROM pracownicy p
+SELECT p.imie, p.nazwisko, pe.kwota FROM pracownicy p
 JOIN wynagrodzenie w ON p.id_pracownika = w.id_pracownika
 JOIN pensja pe ON w.id_pensji = pe.id_pensji
-JOIN premia pr ON w.id_premii = pr.id_premii
-ORDER BY laczne_wynagrodzenie DESC ;
+ORDER BY pe.kwota DESC;
 
 SELECT pe.stanowisko, COUNT(p.id_pracownika) AS liczba_pracownikow FROM pracownicy p
 JOIN wynagrodzenie w ON p.id_pracownika = w.id_pracownika
