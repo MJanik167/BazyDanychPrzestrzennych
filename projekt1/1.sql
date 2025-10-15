@@ -10,7 +10,7 @@ create table pracownicy(
                                             nazwisko      varchar(255),
                                             adres         varchar(255),
                                             telefon       varchar(255)
-                                        )
+                                        );
 create table  godziny
                                         (
                                             id_godziny    integer not null
@@ -21,7 +21,7 @@ create table  godziny
                                                     references pracownicy,
                                             liczba_godzin integer,
                                             data          date
-                                        )
+                                        );
 create table  pensja
                                         (
                                             id_pensji  integer not null
@@ -29,7 +29,7 @@ create table  pensja
                                                     primary key,
                                             stanowisko varchar,
                                             kwota      double precision
-                                        )
+                                        );
 create table  premia
                                         (
                                             id_premii integer not null
@@ -37,7 +37,7 @@ create table  premia
                                                     primary key,
                                             rodzaj    varchar,
                                             kwota     double precision
-                                        )
+                                        );
                                         create table  wynagrodzenie
                                         (
                                             id_wynagrodzenia integer not null
@@ -56,7 +56,7 @@ create table  premia
                                             id_premii        integer
                                                 constraint id_premii
                                                     references premia
-                                        )
+                                        );
 INSERT INTO pracownicy (imie, nazwisko, adres, telefon) VALUES
                                         ('Jan', 'Kowalski', 'ul. Lipowa 5, Kraków', '600123456'),
                                         ('Anna', 'Nowak', 'ul. Długa 10, Warszawa', '601234567'),
@@ -67,7 +67,7 @@ INSERT INTO pracownicy (imie, nazwisko, adres, telefon) VALUES
                                         ('Tomasz', 'Zieliński', 'ul. Ogrodowa 22, Łódź', '606789012'),
                                         ('Ewa', 'Szymańska', 'ul. Szkolna 9, Katowice', '607890123'),
                                         ('Robert', 'Dąbrowski', 'ul. Parkowa 1, Białystok', '608901234'),
-                                        ('Magdalena', 'Pawlak', 'ul. Spacerowa 4, Toruń', '609012345')
+                                        ('Magdalena', 'Pawlak', 'ul. Spacerowa 4, Toruń', '609012345');
 
 INSERT INTO godziny (id_godziny, id_pracownika, liczba_godzin, data) VALUES
                                         (1, 1, 160, '2025-01-31'),
@@ -79,7 +79,7 @@ INSERT INTO godziny (id_godziny, id_pracownika, liczba_godzin, data) VALUES
                                         (7, 7, 165, '2025-01-31'),
                                         (8, 8, 162, '2025-01-31'),
                                         (9, 9, 170, '2025-01-31'),
-                                        (10, 10, 155, '2025-01-31')
+                                        (10, 10, 155, '2025-01-31');
 
 INSERT INTO pensja (id_pensji, stanowisko, kwota) VALUES
                                         (1, 'Księgowy', 5200),
@@ -91,7 +91,7 @@ INSERT INTO pensja (id_pensji, stanowisko, kwota) VALUES
                                         (7, 'HR Manager', 8800),
                                         (8, 'Marketing Specialist', 6400),
                                         (9, 'Technik', 5000),
-                                        (10, 'Operator', 4500)
+                                        (10, 'Operator', 4500);
 
  INSERT INTO premia (id_premii, rodzaj, kwota) VALUES
                                         (1, 'Roczna', 1500),
@@ -103,7 +103,7 @@ INSERT INTO pensja (id_pensji, stanowisko, kwota) VALUES
                                         (7, 'Specjalna', 2000),
                                         (8, 'Projektowa', 1800),
                                         (9, 'Za oszczędności', 700),
-                                        (10, 'Okazjonalna', 500)
+                                        (10, 'Okazjonalna', 500);
 
     INSERT INTO wynagrodzenie (id_wynagrodzenia, " data", id_pracownika, id_godziny, id_pensji, id_premii) VALUES
                                         (1, '2025-01-31', 1, 1, 1, 1),
@@ -115,4 +115,4 @@ INSERT INTO pensja (id_pensji, stanowisko, kwota) VALUES
                                         (7, '2025-01-31', 7, 7, 7, 7),
                                         (8, '2025-01-31', 8, 8, 8, 8),
                                         (9, '2025-01-31', 9, 9, 9, 9),
-                                        (10, '2025-01-31', 10, 10, 10, 10)
+                                        (10, '2025-01-31', 10, 10, 10, 10);
