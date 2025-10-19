@@ -17,7 +17,8 @@ CREATE TABLE poi (
 );
 
 INSERT INTO buildings (geometry, name) VALUES
-                                           ('POLYGON((9 8, 10 8, 10 9, 9 9, 9 8))', 'BuildingC'),
+                                           ('POLYGON((1 2, 2 2, 2 1, 1 1, 1 2))', 'BuildingF'),
+                                           ('POLYGON((9 8, 10 8, 10 9, 9 9, 9 8))', 'BuildingD'),
                                            ('POLYGON((3 8, 5 8, 5 6, 3 6, 3 8))', 'BuildingC'),
                                            ('POLYGON((4 7, 6 7, 6 5, 4 5, 4 7))', 'BuildingB'),
                                            ('POLYGON((8 4,10.5 4, 10.5 1.5, 8 1.5, 8 4))', 'BuildingA');
