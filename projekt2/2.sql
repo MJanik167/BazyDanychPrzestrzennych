@@ -28,9 +28,10 @@ SELECT * FROM buildings b
 JOIN roads r ON r.name='RoadX'
 where st_y(st_centroid(b.geometry))>st_y(st_centroid(r.geometry));
 
-SELECT st_area(st_difference(
-       geometry,
-        st_geomfromtext('Polygon((4 7,6 7,6 8,4 8,4 7))')
-       ))
+SELECT st_area(
+               st_difference(
+                geometry,
+                st_geomfromtext('Polygon((4 7,6 7,6 8,4 8,4 7))')
+                ))
 FROM buildings
 WHERE name = 'BuildingC';
