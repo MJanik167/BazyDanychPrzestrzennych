@@ -8,4 +8,4 @@ shp2pgsql -I -s 4326 C:\Users\mjani\Downloads\T2019_KAR_GERMANY\T2019_KAR_GERMAN
 shp2pgsql -I -s 4326 C:\Users\mjani\Downloads\T2019_KAR_GERMANY\T2019_KAR_GERMANY\T2019_KAR_WATER_LINES.shp public.t2019_water_lines | psql -d karlsruhe -U postgres
 shp2pgsql -I -s 4326 C:\Users\mjani\Downloads\T2019_KAR_GERMANY\T2019_KAR_GERMANY\T2019_KAR_RAILWAYS.shp public.t2019_railways | psql -d karlsruhe -U postgres
 
- shp2pgsql -I -s 4326:3068 C:\Users\mjani\Downloads\T2019_KAR_GERMANY\T2019_KAR_GERMANY\T2019_KAR_STREETS.shp public.streets_reprojected | psql -d karlsruhe -U postgres
+shp2pgsql -I -s 4326:3068 C:\Users\mjani\Downloads\T2019_KAR_GERMANY\T2019_KAR_GERMANY\T2019_KAR_STREETS.shp public.streets_reprojected | psql -d karlsruhe -U postgres
