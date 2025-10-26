@@ -21,3 +21,22 @@ WHERE  st_within(
         (SELECT st_buffer(ST_MakeLine(ST_Transform(geometry, 25832)),500) FROM input_points)
     );
 
+
+SELECT COUNT(*) FROM t2019_poi p
+WHERE st_within(
+        st_transform(p.geom, 25832),
+        (SELECT st_union(st_buffer(st_transform(l.geom, 25832),200)) FROM t2019_land_use_a l where l.type like 'Park%')
+      )
+AND
+    p.type = 'Sporting Goods Store';
+
+
+INSERT INTO T2019_KAR_BRIDGES (geom)
+SELECT (ST_Dump(ST_Intersection(
+            ST_Transform(r.geom, 3068),
+            ST_Transform(w.geom, 3068) ))).geom
+FROM t2019_railways r
+JOIN t2019_water_lines w ON ST_Intersects(
+       ST_Transform(r.geom, 3068),
+       ST_Transform(w.geom, 3068)
+   );
