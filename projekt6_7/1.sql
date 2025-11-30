@@ -71,14 +71,14 @@ WHERE b.parish ilike 'paranhos' and ST_Intersects(b.geom,a.rast);
 CREATE TABLE janik.dumppolygons AS
 SELECT
 a.rid,(ST_DumpAsPolygons(ST_Clip(a.rast,b.geom))).geom,(ST_DumpAsPolygons(ST_Clip(a.rast,b.geom))).val
-FROM rasters.landsat AS a, vectors.porto_parishes AS b
+FROM rasters.landsat8 AS a, vectors.porto_parishes AS b
 WHERE b.parish ilike 'paranhos' and ST_Intersects(b.geom,a.rast);
 
 --Analiza rastrów
 
 CREATE TABLE janik.landsat_nir AS
 SELECT rid, ST_Band(rast,4) AS rast
-FROM rasters.landsat;
+FROM rasters.landsat8;
 
 CREATE TABLE janik.paranhos_dem AS
 SELECT a.rid,ST_Clip(a.rast, b.geom,true) as rast
@@ -121,6 +121,8 @@ rasters.dem a, vectors.places AS b
 WHERE ST_Intersects(a.rast,b.geom)
 ORDER BY b.name;
 
+
+DROP TABLE IF EXISTS janik.tpi30;
 create table janik.tpi30 as
 select ST_TPI(a.rast,1) as rast
 from rasters.dem a;
@@ -130,3 +132,114 @@ USING gist (ST_ConvexHull(rast));
 
 SELECT AddRasterConstraints('janik'::name,
 'tpi30'::name,'rast'::name);
+
+--samodzielne usprawnienie poprzez utworzenie mniejszych kafelków
+
+CREATE TABLE rasters.dem_smaller AS
+SELECT t.rast
+FROM rasters.dem d,
+LATERAL ST_Tile(d.rast, 256, 256) AS t(rast);
+
+CREATE INDEX dem_smaller_rast_gist
+ON rasters.dem_smaller
+USING GIST (ST_ConvexHull(rast));
+
+CREATE TABLE janik.tpi30_faster AS
+SELECT ST_TPI(a.rast, 1) AS rast
+FROM rasters.dem_smaller a ;
+
+CREATE INDEX tpi30_faster_rast_gist
+ON janik.tpi30_faster
+USING GIST (ST_ConvexHull(rast));
+
+SELECT AddRasterConstraints('janik'::name,
+'tpi30_faster'::name,'rast'::name);
+ --Poprawa z 15 sekund na 13, czyli o około 15%
+
+--Algebra map
+--przykład 1
+
+CREATE TABLE janik.porto_ndvi AS
+WITH r AS (
+SELECT a.rid,ST_Clip(a.rast, b.geom,true) AS rast
+FROM rasters.landsat8 AS a, vectors.porto_parishes AS b
+WHERE b.municipality ilike 'porto' and ST_Intersects(b.geom,a.rast)
+)
+SELECT
+r.rid,ST_MapAlgebra(
+r.rast, 1,
+r.rast, 4,
+'([rast2.val] - [rast1.val]) / ([rast2.val] +
+[rast1.val])::float','32BF'
+) AS rast
+FROM r;
+
+CREATE INDEX idx_porto_ndvi_rast_gist ON janik.porto_ndvi
+USING gist (ST_ConvexHull(rast));
+
+SELECT AddRasterConstraints('janik'::name,
+'porto_ndvi'::name,'rast'::name);
+
+--przykład 2
+create or replace function janik.ndvi(
+value double precision [] [] [],
+pos integer [][],
+VARIADIC userargs text []
+)
+RETURNS double precision AS
+$$
+BEGIN
+--RAISE NOTICE 'Pixel Value: %', value [1][1][1];-->For debug purposes
+RETURN (value [2][1][1] - value [1][1][1])/(value [2][1][1]+value
+[1][1][1]); --> NDVI calculation!
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE COST 1000;
+
+CREATE TABLE janik.porto_ndvi2 AS
+WITH r AS (
+SELECT a.rid,ST_Clip(a.rast, b.geom,true) AS rast
+FROM rasters.landsat8 AS a, vectors.porto_parishes AS b
+WHERE b.municipality ilike 'porto' and ST_Intersects(b.geom,a.rast)
+)
+SELECT
+r.rid,ST_MapAlgebra(
+r.rast, ARRAY[1,4],
+'janik.ndvi(double precision[],
+integer[],text[])'::regprocedure, --> This is the function!
+'32BF'::text
+) AS rast
+FROM r;
+
+
+CREATE INDEX idx_porto_ndvi2_rast_gist ON janik.porto_ndvi2
+USING gist (ST_ConvexHull(rast));
+
+SELECT AddRasterConstraints('janik'::name,
+'porto_ndvi2'::name,'rast'::name);
+
+--Eskport danych
+
+SELECT ST_AsTiff(ST_Union(rast))
+FROM janik.porto_ndvi;
+
+SELECT ST_AsGDALRaster(ST_Union(rast), 'GTiff', ARRAY['COMPRESS=DEFLATE',
+'PREDICTOR=2', 'PZLEVEL=9'])
+FROM janik.porto_ndvi;
+--sprawdzenie listy formatów
+SELECT ST_GDALDrivers();
+
+CREATE TABLE tmp_out AS
+SELECT lo_from_bytea(0,
+ ST_AsGDALRaster(ST_Union(rast), 'GTiff', ARRAY['COMPRESS=DEFLATE',
+'PREDICTOR=2', 'PZLEVEL=9'])
+ ) AS loid
+FROM janik.porto_ndvi;
+----------------------------------------------
+SELECT lo_export(loid, 'D:\myraster.tiff') --> Save the file in a place where the user postgres have access. In windows a flash drive usualy works fine.
+ FROM tmp_out;
+----------------------------------------------
+SELECT lo_unlink(loid)
+ FROM tmp_out; --> Delete the large object.
+
+--publikowanie
