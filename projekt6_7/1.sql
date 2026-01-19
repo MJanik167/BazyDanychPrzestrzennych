@@ -156,6 +156,19 @@ SELECT AddRasterConstraints('janik'::name,
 'tpi30_faster'::name,'rast'::name);
  --Poprawa z 15 sekund na 13, czyli o około 15%
 
+--rozwiązanie z pdf
+
+create table janik.tpi30_porto as
+SELECT ST_TPI(a.rast,1) as rast
+FROM rasters.dem AS a, vectors.porto_parishes AS b
+WHERE ST_Intersects(a.rast, b.geom) AND b.municipality ilike 'porto';
+
+CREATE INDEX idx_tpi30_porto_rast_gist ON janik.tpi30_porto
+USING gist (ST_ConvexHull(rast));
+
+SELECT AddRasterConstraints('janik'::name,
+'tpi30_porto'::name,'rast'::name);
+
 --Algebra map
 --przykład 1
 
